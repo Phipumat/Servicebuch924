@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>924 Servicebuch</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="924 Service">
+<meta name="theme-color" content="#E4E8EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0D131A" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#E4E8EC; --surface:#F6F7F8; --ink:#16202B; --muted:#56626F; --line:#C5CCD3;
+  --accent:#2A4B7C; --accent-ink:#FFFFFF;
+  --red:#B8322A; --amber:#B97F00; --green:#2E7A4C; --grey:#8B96A1;
+  --odo-bg:#121A23; --odo-cell:#1E2833; --odo-ink:#EEF0EC; --odo-last-bg:#EEF0EC; --odo-last-ink:#121A23;
+  --glow:0 0 0 rgba(0,0,0,0);
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D131A; --surface:#161E27; --ink:#E6EAEE; --muted:#93A0AD; --line:#2A3542;
+    --accent:#7FA2D6; --accent-ink:#0D131A;
+    --red:#FF5A4C; --amber:#FFB21E; --green:#4FD08A; --grey:#6B7785;
+    --odo-bg:#05080B; --odo-cell:#141C25; --odo-ink:#EEF0EC; --odo-last-bg:#D9DCD6; --odo-last-ink:#05080B;
+    --glow:0 0 10px currentColor;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D131A; --surface:#161E27; --ink:#E6EAEE; --muted:#93A0AD; --line:#2A3542;
+  --accent:#7FA2D6; --accent-ink:#0D131A;
+  --red:#FF5A4C; --amber:#FFB21E; --green:#4FD08A; --grey:#6B7785;
+  --odo-bg:#05080B; --odo-cell:#141C25; --odo-ink:#EEF0EC; --odo-last-bg:#D9DCD6; --odo-last-ink:#05080B;
+  --glow:0 0 10px currentColor;
+  color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);
+  font-family:"Barlow",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:17px;line-height:1.45;
+  -webkit-tap-highlight-color:transparent}
+.cond{font-family:"Barlow Condensed","Arial Narrow",system-ui,sans-serif}
+button{font:inherit;color:inherit}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+main{max-width:640px;margin:0 auto;padding:12px 16px 110px}
+
+/* top bar */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0 10px}
+.brand{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:1.35rem;letter-spacing:.01em}
+.brand small{display:block;font-family:"Barlow",sans-serif;font-weight:500;font-size:.8rem;color:var(--muted);letter-spacing:0}
+.sync{all:unset;cursor:pointer;padding:6px 0;font-size:.78rem;color:var(--muted);display:flex;align-items:center;gap:6px;white-space:nowrap}
+.sync i{width:8px;height:8px;border-radius:50%;background:var(--grey);display:inline-block}
+.sync.on i{background:var(--green)}
+
+/* odometer hero */
+.odo{background:var(--odo-bg);color:var(--odo-ink);border-radius:14px;padding:16px 16px 14px;margin-bottom:14px}
+.odo-btn{all:unset;cursor:pointer;display:block;width:100%}
+.odo-btn:focus-visible{outline:3px solid var(--accent);outline-offset:4px;border-radius:8px}
+.drum{display:flex;gap:4px;align-items:stretch}
+.drum span{flex:1;max-width:52px;text-align:center;font-family:"Barlow Condensed",sans-serif;font-weight:600;
+  font-size:clamp(2rem,10vw,2.9rem);line-height:1.15;background:var(--odo-cell);border-radius:4px;
+  font-variant-numeric:tabular-nums;box-shadow:inset 0 10px 10px -8px rgba(0,0,0,.6),inset 0 -10px 10px -8px rgba(0,0,0,.6)}
+.drum span.last{background:var(--odo-last-bg);color:var(--odo-last-ink)}
+.drum em{font-style:normal;align-self:flex-end;font-family:"Barlow Condensed",sans-serif;font-size:1.1rem;padding:0 0 6px 6px;opacity:.75}
+.odo-meta{display:flex;justify-content:space-between;gap:10px;margin-top:10px;font-size:.85rem;opacity:.8}
+.odo-meta b{font-weight:600;opacity:1}
+
+/* summary */
+.summary{display:flex;gap:8px;margin:0 0 18px;flex-wrap:wrap}
+.pill{display:flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:.9rem}
+
+.lamp{width:14px;height:14px;border-radius:50%;flex:none;background:var(--grey);color:var(--grey);box-shadow:var(--glow)}
+.lamp.over{background:var(--red);color:var(--red)}
+.lamp.soon,.lamp.unknown{background:var(--amber);color:var(--amber)}
+.lamp.ok{background:var(--green);color:var(--green)}
+.lamp.unknown{background:transparent;border:3px solid var(--amber)}
+
+h2{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:1.3rem;margin:22px 0 8px}
+h2:first-child{margin-top:4px}
+
+/* task list */
+.list{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.row{all:unset;cursor:pointer;display:grid;grid-template-columns:14px 1fr auto;gap:4px 14px;align-items:center;
+  padding:14px 4px;border-bottom:1px solid var(--line)}
+.row:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
+.row .t{font-weight:600}
+.row .s{grid-column:2/4;font-size:.9rem;color:var(--muted)}
+.row .s.over{color:var(--red)}
+.row .g{font-size:.8rem;color:var(--muted);text-align:right}
+.bar{grid-column:2/4;height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:4px}
+.bar b{display:block;height:100%;background:var(--green)}
+.bar b.soon{background:var(--amber)} .bar b.over{background:var(--red)}
+
+/* detail */
+.back{all:unset;cursor:pointer;color:var(--accent);font-weight:600;padding:6px 0;display:inline-block}
+.dt-head{display:flex;align-items:center;gap:12px;margin:6px 0 4px}
+.dt-head h1{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:1.9rem;line-height:1.1;margin:0}
+.dt-status{font-size:1rem;margin:0 0 14px;color:var(--muted)}
+.dt-status.over{color:var(--red);font-weight:600}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.facts dt{color:var(--muted);font-size:.9rem}
+.facts dd{margin:0;font-weight:500}
+.btn{cursor:pointer;border:0;border-radius:10px;padding:13px 18px;font-weight:600;background:var(--accent);color:var(--accent-ink);min-height:48px}
+.btn.wide{width:100%}
+.btn.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.btn.danger{background:transparent;color:var(--red);border:1.5px solid var(--red)}
+.btn.small{padding:8px 12px;min-height:38px;font-size:.9rem}
+details.iv{margin:10px 0 0}
+details.iv summary{cursor:pointer;color:var(--accent);font-weight:600;padding:8px 0}
+.iv-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0 10px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:.88rem;color:var(--muted)}
+input,textarea,select{font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:8px;padding:10px 12px;min-height:46px;width:100%}
+textarea{min-height:90px;resize:vertical}
+.note{font-size:.88rem;color:var(--muted);margin:8px 0}
+.meta{display:flex;gap:18px;flex-wrap:wrap;font-size:.95rem;margin:4px 0 6px}
+.meta span b{font-weight:600}
+ul.plain{margin:4px 0 0;padding-left:20px}
+ul.plain li{margin:3px 0}
+.spec li.verify::after{content:" (im Handbuch prüfen)";color:var(--amber);font-size:.85rem}
+ol.steps{list-style:none;margin:6px 0 0;padding:0;counter-reset:s}
+ol.steps li{counter-increment:s;border-bottom:1px solid var(--line)}
+ol.steps label{display:grid;grid-template-columns:30px 1fr 26px;gap:10px;padding:13px 2px;cursor:pointer;align-items:start}
+ol.steps label::before{content:counter(s);font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:1.4rem;line-height:1;color:var(--accent);padding-top:2px}
+ol.steps input{width:24px;height:24px;min-height:0;margin:0;accent-color:var(--green)}
+ol.steps .st{font-weight:600;display:block}
+ol.steps .sd{color:var(--muted);font-size:.93rem}
+ol.steps li.done .st,ol.steps li.done .sd{text-decoration:line-through;opacity:.55}
+.warn{border-left:4px solid var(--red);background:var(--surface);padding:10px 14px;border-radius:0 10px 10px 0;margin:14px 0;font-size:.95rem}
+.links{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.links a{display:block;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface);text-decoration:none;color:var(--ink)}
+.links a small{display:block;color:var(--muted);font-size:.82rem}
+.links a b{color:var(--accent);font-weight:600}
+
+/* log */
+.entry{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.entry .ed{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:1.2rem}
+.entry .ek{color:var(--muted);font-size:.9rem;margin-left:8px}
+.entry p{margin:6px 0 8px;white-space:pre-wrap}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:.8rem;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.entry .del{all:unset;cursor:pointer;color:var(--red);font-size:.85rem;margin-top:8px;display:inline-block}
+
+/* tabs */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom,0px);z-index:20}
+nav.tabs div{max-width:640px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr)}
+nav.tabs button{all:unset;cursor:pointer;text-align:center;padding:12px 4px 13px;font-weight:600;font-size:.95rem;color:var(--muted);position:relative}
+nav.tabs button[aria-current="page"]{color:var(--accent)}
+nav.tabs button[aria-current="page"]::before{content:"";position:absolute;top:0;left:25%;right:25%;height:3px;background:var(--accent);border-radius:0 0 3px 3px}
+nav.tabs button:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
+.badge{display:inline-block;min-width:20px;padding:0 6px;margin-left:4px;border-radius:10px;background:var(--red);color:#fff;font-size:.78rem;line-height:20px}
+
+/* dialog */
+dialog{border:0;border-radius:16px;padding:0;width:min(520px,calc(100% - 24px));background:var(--surface);color:var(--ink)}
+dialog::backdrop{background:rgba(5,8,11,.55)}
+.dlg{padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px}
+.dlg h3{margin:0;font-family:"Barlow Condensed",sans-serif;font-size:1.45rem}
+.dlg .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dlg .acts{display:flex;gap:10px;justify-content:flex-end;margin-top:4px}
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;max-height:220px;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:8px}
+.checks label{display:flex;gap:8px;align-items:center;font-size:.9rem;padding:4px 0}
+.checks input{width:20px;height:20px;min-height:0}
+.empty{color:var(--muted);padding:20px 0}
+@media (prefers-reduced-motion:no-preference){ .drum span{transition:background .3s} }
+</style>
+</head>
+<body>
+<main id="app" aria-live="polite"></main>
+<nav class="tabs" aria-label="Bereiche"><div>
+  <button data-tab="status">Status<span id="badge"></span></button>
+  <button data-tab="guides">Anleitungen</button>
+  <button data-tab="log">Serviceheft</button>
+</div></nav>
+<dialog id="dlg"><div class="dlg" id="dlgBody"></div></dialog>
+
+<script>
+/* ---------- Quellen ---------- */
+const SRC = {
+  manual:{label:"Porsche-Werkstatthandbuch 924",sub:"ManualsLib – zum Nachschlagen neben deinem Original",url:"https://www.manualslib.com/manual/1889014/Porsche-924.html?page=2"},
+  oil:{label:"Motoröl und Ölfilter wechseln, 924 2.0",sub:"Autodoc Club – bebilderte Schrittfolge",url:"https://club.autodoc.co.uk/manuals/how-to-change-engine-oil-and-filter-on-porsche-924-coupe-replacement-guide-29657"},
+  brake:{label:"Bremsflüssigkeit wechseln, 924",sub:"Autodoc Club – Anleitungen und Videos",url:"https://club.autodoc.co.uk/manuals/oils-and-fluids/brake-fluid/porsche/924"},
+  fuel:{label:"Kraftstofffilter wechseln, 924",sub:"Autodoc Club – Anleitungen und Videos",url:"https://club.autodoc.co.uk/manuals/filters/fuel-filter/porsche/924"},
+  kjet:{label:"Bosch K-Jetronic Workshop Manual (Porsche)",sub:"PDF mit Bauteillagen und Prüfwerten",url:"https://rennlist.com/forums/attachments/911-forum/1323276d1626352742-hot-start-in-3-0-k-jetronic-workshop-manual.pdf"},
+  parts:{label:"Porsche-Classic-Teileliste 924",sub:"Porsche Club GB – Teilenummern für Filter u. a.",url:"https://www.porscheclubgb.com/regions-registers/registers/classic/924/resources/remanufactured-924-parts"}
+};
+const img = q => ({label:"Bilder und Zeichnungen",sub:"Google Bilder: „porsche 924 "+q+"“",url:"https://www.google.com/search?tbm=isch&q="+encodeURIComponent("porsche 924 "+q)});
+const vid = q => ({label:"Videoanleitungen",sub:"YouTube: „porsche 924 "+q+"“",url:"https://www.youtube.com/results?search_query="+encodeURIComponent("porsche 924 "+q)});
+
+/* ---------- Wartungsposten ---------- */
+const TASKS = [
+ {id:"oel",name:"Motoröl und Ölfilter",grp:"Motor",months:12,km:7500,verify:true,diff:"leicht",time:"ca. 1 Std.",
+  q:"oil change",qx:"oil filter location",
+  tools:["Ölablasswanne (mind. 6 l)","Nuss oder Ringschlüssel für die Ablassschraube","Ölfilterschlüssel","Drehmomentschlüssel","Trichter, Lappen, Handschuhe","Wagenheber und Unterstellböcke"],
+  parts:["Motoröl (Viskosität laut Handbuch)","Ölfilter","Neuer Dichtring für die Ablassschraube"],
+  specs:[["Ölfilter: 25 Nm laut Autodoc-Anleitung",1],["Ablassschraube: Anzugsmoment",1],["Füllmenge mit Filterwechsel",1]],
+  steps:[
+   ["Motor warmfahren","Warmes Öl fließt besser ab und nimmt Ablagerungen mit. Nicht direkt nach einer langen Fahrt arbeiten, das Öl ist dann zu heiß."],
+   ["Fahrzeug sichern","Eben abstellen, Gang einlegen, aufbocken und ausschließlich auf Unterstellböcken arbeiten."],
+   ["Öleinfülldeckel öffnen","So läuft das Öl ohne Unterdruck gleichmäßig ab."],
+   ["Öl ablassen","Wanne unterstellen, Ablassschraube an der Ölwanne lösen und das Öl rund 15 Minuten ablaufen lassen."],
+   ["Ölfilter abschrauben","Mit dem Filterschlüssel lösen, Restöl auffangen. Dichtfläche am Block reinigen und prüfen, dass der alte Dichtring nicht kleben geblieben ist."],
+   ["Neuen Filter montieren","Gummidichtung dünn mit frischem Öl benetzen, von Hand ansetzen und mit dem vorgegebenen Moment festziehen."],
+   ["Ablassschraube einsetzen","Immer mit neuem Dichtring, mit Drehmoment anziehen."],
+   ["Öl einfüllen","Zuerst etwa einen halben Liter weniger als die Sollmenge einfüllen, dann am Messstab bis zur Max-Marke ergänzen."],
+   ["Probelauf und Dichtheit","Motor starten, bis die Öldruckleuchte erlischt. Filter und Ablassschraube auf Dichtheit prüfen."],
+   ["Ölstand kontrollieren","Motor aus, fünf Minuten warten, Stand erneut prüfen. Altöl beim Händler oder Wertstoffhof abgeben."]],
+  warn:"Nie unter einem Auto arbeiten, das nur auf dem Wagenheber steht. Heißes Öl kann Verbrühungen verursachen.",
+  links:["oil","manual"]},
+
+ {id:"zuendkerzen",name:"Zündkerzen",grp:"Motor",months:24,km:15000,verify:true,diff:"leicht",time:"ca. 30 Min.",
+  q:"spark plugs",qx:"spark plug replacement",
+  tools:["Zündkerzennuss mit Gummieinsatz","Verlängerung, Ratsche","Drehmomentschlüssel","Fühler- oder Drahtlehre","Druckluft oder Pinsel"],
+  parts:["4 Zündkerzen (Typ laut Handbuch)"],
+  specs:[["Elektrodenabstand",1],["Anzugsmoment Zündkerzen",1]],
+  steps:[
+   ["Motor abkühlen lassen","Kerzen nur am kalten Motor wechseln, sonst leidet das Gewinde im Aluminiumkopf."],
+   ["Zündkabel markieren","Kabel 1 bis 4 kennzeichnen, damit die Zündfolge erhalten bleibt."],
+   ["Kerzenschächte reinigen","Schmutz ausblasen, damit nichts in den Brennraum fällt."],
+   ["Stecker abziehen","Am Stecker ziehen, nie am Kabel."],
+   ["Alte Kerzen ausbauen","Kerzenbild beurteilen: rehbraun ist gut, schwarz-rußig deutet auf zu fettes Gemisch, weiß auf zu mageres."],
+   ["Elektrodenabstand prüfen","Neue Kerzen mit der Lehre messen und bei Bedarf vorsichtig anpassen."],
+   ["Neue Kerzen eindrehen","Zuerst von Hand eindrehen (ein Stück Schlauch hilft), dann mit Drehmoment anziehen."],
+   ["Stecker aufstecken und testen","In der richtigen Reihenfolge aufstecken, Motor starten und auf Rundlauf achten."]],
+  links:["manual"]},
+
+ {id:"zahnriemen",name:"Zahnriemen und Spannrolle",grp:"Motor",months:48,km:77000,verify:true,diff:"anspruchsvoll",time:"4–6 Std.",
+  q:"timing belt replacement",qx:"timing belt diagram TDC marks",
+  tools:["Steckschlüsselsatz und Ringschlüssel","Drehmomentschlüssel","Werkzeug für die Spannrolle","Lackstift, Taschenlampe, Spiegel","Kamera (Handy) für Vorher-Fotos"],
+  parts:["Zahnriemen mit Spannrolle (Kit)","Keilriemen (sinnvoll gleich mitzutauschen)"],
+  specs:[["Riemenspannung: Prüfmethode und Sollwert",1],["Anzugsmomente Spannrolle und Kurbelwellenschraube",1]],
+  steps:[
+   ["Batterie abklemmen","Massekabel lösen."],
+   ["Keilriemen und Abdeckung abbauen","Keilriemen entspannen, Zahnriemenabdeckung abnehmen."],
+   ["Motor auf OT Zylinder 1 stellen","Nur an der Kurbelwelle in Motordrehrichtung drehen. Markierung am Nockenwellenrad und OT-Markierung an Schwungrad bzw. Riemenscheibe müssen fluchten, der Verteilerfinger zeigt auf Zylinder 1."],
+   ["Markierungen sichern","Alle Marken zusätzlich mit Lackstift nachziehen und fotografieren."],
+   ["Alten Riemen abnehmen","Spannrolle lösen, Riemen abziehen. Kurbel- und Nockenwelle dabei nicht verdrehen."],
+   ["Bauteile prüfen","Zahnräder auf Verschleiß, Wellendichtringe auf Öl prüfen. Spannrolle immer mit erneuern."],
+   ["Neuen Riemen auflegen","Laufrichtungspfeil beachten, die Zugseite straff halten."],
+   ["Riemen spannen","Nach Handbuch spannen und die Spannrolle festziehen."],
+   ["Steuerzeiten kontrollieren","Motor zwei volle Umdrehungen von Hand drehen, alle Marken erneut prüfen, Spannung nachmessen."],
+   ["Zusammenbauen und Probelauf","Abdeckung und Keilriemen montieren, Batterie anklemmen, Motor starten. Spannung nach ca. 1.500 km nochmals prüfen."]],
+  warn:"Ein falsch aufgelegter oder reißender Zahnriemen kann zu schweren Motorschäden führen. Im Zweifel jeden Schritt mit dem Handbuch abgleichen.",
+  links:["manual"]},
+
+ {id:"riemencheck",name:"Riemen prüfen (Zahn- und Keilriemen)",grp:"Motor",months:12,km:10000,diff:"leicht",time:"ca. 20 Min.",
+  q:"timing belt tension check",qx:"v belt alternator",
+  tools:["Taschenlampe","Lineal oder Messschieber"],
+  parts:[],
+  specs:[["Durchbiegung Keilriemen",1],["Zahnriemenspannung",1]],
+  steps:[
+   ["Sichtprüfung Keilriemen","Auf Risse, ausgefranste Flanken und glänzende, verglaste Laufflächen achten."],
+   ["Keilriemenspannung prüfen","Durchbiegung mittig zwischen zwei Riemenscheiben mit dem Daumen messen und mit dem Sollwert vergleichen."],
+   ["Zahnriemen begutachten","Abdeckung abnehmen, Zähne und Rücken auf Risse, Ölfilm und Ausfransungen prüfen."],
+   ["Zahnriemenspannung prüfen","Nach der Methode aus dem Handbuch prüfen und bei Bedarf nachspannen."],
+   ["Abdeckung montieren","Ergebnis im Serviceheft eintragen."]],
+  links:["manual"]},
+
+ {id:"getriebeoel",name:"Getriebeöl (Transaxle)",grp:"Antrieb",months:48,km:60000,verify:true,diff:"mittel",time:"ca. 1 Std.",
+  q:"transaxle gearbox oil change",qx:"transaxle drain fill plug",
+  tools:["Passender Steckschlüssel für die Verschlussschrauben","Ölpumpe oder Spritzflasche","Auffangwanne","Wagenheber und Unterstellböcke"],
+  parts:["Getriebeöl nach Spezifikation (hängt vom Getriebetyp ab)","Neue Dichtringe für die Verschlussschrauben"],
+  specs:[["Ölsorte und Füllmenge für dein Getriebe (4- oder 5-Gang)",1],["Anzugsmoment Verschlussschrauben",1]],
+  steps:[
+   ["Fahrzeug waagerecht aufbocken","Nur waagerecht stimmt später der Füllstand."],
+   ["Getriebe warmfahren","Warmes Öl läuft vollständiger ab."],
+   ["Zuerst die Einfüllschraube lösen","Lässt sie sich nicht öffnen, bleibt das Öl drin. So stehst du nie mit leerem Getriebe da."],
+   ["Öl ablassen","Ablassschraube lösen, ablaufen lassen. Magnet an der Schraube reinigen und Späne beurteilen."],
+   ["Ablassschraube einsetzen","Mit neuem Dichtring und Drehmoment."],
+   ["Neues Öl einfüllen","Einfüllen, bis es an der Einfüllöffnung austritt."],
+   ["Einfüllschraube einsetzen","Mit neuem Dichtring festziehen."],
+   ["Probefahrt","Alle Gänge durchschalten, danach auf Dichtheit prüfen."]],
+  links:["manual"]},
+
+ {id:"bremsfluessigkeit",name:"Bremsflüssigkeit",grp:"Bremse",months:24,km:null,diff:"mittel",time:"1–1,5 Std.",
+  q:"brake fluid bleed",qx:"brake system diagram",
+  tools:["Ringschlüssel für die Entlüfterventile","Durchsichtiger Schlauch und Auffangflasche","Helfer oder Druckentlüftungsgerät","Spritze zum Absaugen"],
+  parts:["Bremsflüssigkeit DOT 4 (ca. 1 l)"],
+  specs:[["Entlüftungsreihenfolge",1]],
+  steps:[
+   ["Behälter vorbereiten","Alte Flüssigkeit aus dem Vorratsbehälter weitgehend absaugen und mit neuer auffüllen."],
+   ["Mit dem fernsten Rad beginnen","Üblich ist hinten rechts, hinten links, vorne rechts, vorne links."],
+   ["Schlauch anschließen","Schlauch auf das Entlüfterventil stecken, Ende in die Flasche."],
+   ["Entlüften","Helfer tritt das Pedal und hält es, Ventil öffnen, schließen, Pedal loslassen. Wiederholen, bis klare, blasenfreie Flüssigkeit kommt."],
+   ["Füllstand im Blick behalten","Den Behälter nie leerlaufen lassen, sonst zieht das System Luft."],
+   ["Restliche Räder","Schritte 3 bis 5 an jedem Rad in der Reihenfolge wiederholen."],
+   ["Abschließen","Ventile festziehen, Pedalgefühl prüfen (fest, nicht schwammig), Füllstand auf Max."],
+   ["Bremsprobe","Langsam auf freier Strecke testen."]],
+  warn:"Bremsflüssigkeit greift Lack an – Spritzer sofort mit Wasser abwaschen. Die Bremsanlage ist sicherheitsrelevant: bei Unsicherheit in eine Werkstatt.",
+  links:["brake","manual"]},
+
+ {id:"kuehlmittel",name:"Kühlmittel",grp:"Motor",months:36,km:null,verify:true,diff:"mittel",time:"ca. 1,5 Std.",
+  q:"coolant flush",qx:"cooling system diagram",
+  tools:["Auffangwanne","Zange für Schlauchschellen","Trichter","Frostschutzprüfer"],
+  parts:["Kühlerfrostschutz (für Aluminiumteile geeignet, Spezifikation laut Handbuch)","Destilliertes Wasser","Ggf. neue Schlauchschellen"],
+  specs:[["Füllmenge Kühlsystem",1],["Mischungsverhältnis",1]],
+  steps:[
+   ["Motor vollständig abkühlen lassen","Ein heißes System steht unter Druck."],
+   ["Heizung auf warm stellen","So läuft auch der Wärmetauscher leer."],
+   ["Deckel Ausgleichsbehälter öffnen",""],
+   ["Kühlmittel ablassen","Unteren Kühlerschlauch lösen oder Ablassschraube öffnen."],
+   ["Schläuche prüfen","Spröde, rissige oder aufgequollene Schläuche ersetzen."],
+   ["Wieder verbinden und befüllen","Mischung langsam einfüllen."],
+   ["Entlüften","Motor mit offenem Behälter laufen lassen, Heizung warm, nachfüllen, bis keine Blasen mehr aufsteigen."],
+   ["Funktion prüfen","Thermostat öffnet, der Lüfter schaltet über den Temperaturfühler am Kühler zu."],
+   ["Stand korrigieren","Nach dem Abkühlen den Füllstand nachstellen, Frostschutz messen."]],
+  warn:"Nie ein heißes Kühlsystem öffnen. Kühlmittel ist giftig, auch für Haustiere.",
+  links:["manual"]},
+
+ {id:"luftfilter",name:"Luftfilter",grp:"Kraftstoff und Luft",months:24,km:30000,diff:"leicht",time:"ca. 15 Min.",
+  q:"air filter replacement",qx:"air filter housing K-Jetronic",
+  tools:["Schraubendreher","Lappen"],
+  parts:["Luftfiltereinsatz (Teilenr. 021 129 620 laut Porsche-Classic-Liste)"],
+  specs:[],
+  steps:[
+   ["Gehäuse öffnen","Klammern bzw. Schrauben am Luftfiltergehäuse lösen."],
+   ["Alten Einsatz entnehmen","Vorsichtig arbeiten, darunter sitzt der Luftmengenmesser der K-Jetronic."],
+   ["Gehäuse reinigen","Mit einem Lappen auswischen, nichts in den Ansaugtrakt fallen lassen."],
+   ["Neuen Einsatz einlegen","Auf korrekten Sitz der Dichtkante achten."],
+   ["Gehäuse schließen","Alle Klammern einrasten."]],
+  links:["parts","manual"]},
+
+ {id:"kraftstofffilter",name:"Kraftstofffilter",grp:"Kraftstoff und Luft",months:48,km:60000,verify:true,diff:"mittel",time:"ca. 45 Min.",
+  q:"fuel filter replacement",qx:"fuel pump accumulator filter location",
+  tools:["Ringschlüssel für die Hohlschrauben","Lappen, Auffangbehälter","Schutzbrille","Feuerlöscher in Reichweite"],
+  parts:["Kraftstofffilter (Teilenr. 930 110 076 00 laut Porsche-Classic-Liste)","Neue Dichtringe für die Hohlschrauben"],
+  specs:[["Anzugsmoment Hohlschrauben",1],["Einbaulage des Filters",1]],
+  steps:[
+   ["Arbeitsplatz sichern","Nur gut belüftet arbeiten, keine Zündquellen, Feuerlöscher bereit."],
+   ["Batterie abklemmen","Massekabel lösen."],
+   ["Restdruck beachten","Die K-Jetronic hält auch abgestellt Druck. Anschluss mit einem Lappen umwickeln und langsam öffnen."],
+   ["Durchflussrichtung merken","Pfeil am alten Filter notieren oder fotografieren."],
+   ["Filter tauschen","Hohlschrauben lösen, Filter wechseln, Pfeil in Flussrichtung."],
+   ["Neue Dichtringe verwenden","Hohlschrauben mit Drehmoment anziehen."],
+   ["Inbetriebnahme","Batterie anklemmen, Motor starten (kann einige Sekunden dauern) und alle Anschlüsse auf Dichtheit prüfen."]],
+  warn:"Benzindämpfe sind explosiv. Nie in der Nähe offener Flammen oder laufender Heizgeräte arbeiten.",
+  links:["fuel","kjet","parts"]},
+
+ {id:"verteiler",name:"Zündverteiler (Kappe, Finger)",grp:"Zündung",months:24,km:20000,verify:true,diff:"leicht",time:"ca. 30 Min.",
+  q:"distributor cap rotor",qx:"distributor exploded view",
+  tools:["Schraubendreher","Stroboskoplampe","Bei Kontaktzündung: Fühlerlehre, Schließwinkeltester"],
+  parts:["Verteilerkappe","Verteilerfinger","Bei Bedarf Zündkabel; bei Kontaktzündung Unterbrecherkontakt"],
+  specs:[["Zündzeitpunkt",1],["Schließwinkel (nur Kontaktzündung)",1]],
+  steps:[
+   ["Kappe abnehmen","Halteklammern lösen, Zündkabel stecken lassen."],
+   ["Kappe prüfen","Innen auf Risse, Kriechspuren und abgebrannte Kontakte prüfen."],
+   ["Finger tauschen","Abziehen und neuen Finger aufstecken."],
+   ["Kontakte prüfen","Bei Kontaktzündung Kontakte prüfen oder ersetzen und Schließwinkel einstellen."],
+   ["Zündkabel prüfen","Auf Risse und festen Sitz prüfen."],
+   ["Zündzeitpunkt kontrollieren","Mit Stroboskop nach Handbuch prüfen."]],
+  links:["manual"]},
+
+ {id:"ventilspiel",name:"Ventilspiel",grp:"Motor",months:24,km:30000,verify:true,diff:"anspruchsvoll",time:"2–3 Std.",
+  q:"valve adjustment shims",qx:"cylinder head camshaft bucket tappet",
+  tools:["Fühlerlehre","Niederhalter für Tassenstößel (Spezialwerkzeug)","Zange für Einstellplättchen","Mikrometer"],
+  parts:["Ventildeckeldichtung","Einstellplättchen nach Bedarf"],
+  specs:[["Sollwerte Ein- und Auslass, kalt oder warm",1],["Anzugsmoment Ventildeckel",1]],
+  steps:[
+   ["Ventildeckel abbauen",""],
+   ["Nocken ausrichten","Motor drehen, bis die Nockenspitze des zu messenden Ventils nach oben zeigt."],
+   ["Spiel messen","Fühlerlehre zwischen Nockengrundkreis und Tassenstößel. Alle 8 Ventile messen und notieren."],
+   ["Mit Sollwerten vergleichen","Abweichungen ausrechnen und passende Plättchenstärken bestimmen."],
+   ["Plättchen tauschen","Stößel mit dem Spezialwerkzeug niederdrücken und Plättchen wechseln."],
+   ["Nachmessen","Alle geänderten Ventile erneut prüfen."],
+   ["Ventildeckel montieren","Mit neuer Dichtung, gleichmäßig über Kreuz anziehen."]],
+  links:["manual"]},
+
+ {id:"scheinwerfer",name:"Klappscheinwerfer-Mechanik",grp:"Karosserie und Licht",months:12,km:null,diff:"leicht",time:"ca. 30 Min.",
+  q:"pop up headlight mechanism",qx:"headlight motor linkage",
+  tools:["Sprühfett oder Lithiumfett","Lappen, Bremsenreiniger"],
+  parts:[],
+  specs:[],
+  steps:[
+   ["Scheinwerfer ausklappen","Zündung ein, Licht ein."],
+   ["Gestänge reinigen","Lagerpunkte von altem Fett und Schmutz befreien."],
+   ["Schmieren","Gelenke und Lager dünn fetten."],
+   ["Anschläge prüfen","Gummipuffer und Endlagen kontrollieren."],
+   ["Notbetätigung testen","Handrad am Scheinwerfermotor kennen und einmal ausprobieren."],
+   ["Licht prüfen","Leuchtweite und Funktion prüfen. Für die HU muss jedes LED-Leuchtmittel für dein Fahrzeug zugelassen sein."]],
+  links:["manual"]},
+
+ {id:"bremsefahrwerk",name:"Bremsen und Fahrwerk prüfen",grp:"Bremse",months:12,km:10000,diff:"leicht",time:"ca. 1 Std.",
+  q:"brake pads suspension inspection",qx:"front suspension diagram",
+  tools:["Wagenheber und Unterstellböcke","Taschenlampe","Messschieber"],
+  parts:[],
+  specs:[["Mindeststärke Beläge und Scheiben",1]],
+  steps:[
+   ["Beläge messen","Restbelagstärke an allen Rädern prüfen."],
+   ["Scheiben prüfen","Riefen, Rost und Mindestdicke kontrollieren."],
+   ["Leitungen und Schläuche prüfen","Auf Korrosion, Risse und Scheuerstellen achten."],
+   ["Spiel prüfen","Rad oben und unten fassen und rütteln: Radlager, Achsgelenke, Spurstangenköpfe."],
+   ["Manschetten prüfen","Staubmanschetten auf Risse kontrollieren."],
+   ["Reifen prüfen","Profil, Risse und Alter (DOT-Nummer, älter als 6 Jahre ersetzen)."]],
+  links:["manual"]},
+
+ {id:"unterboden",name:"Unterboden und Rostvorsorge",grp:"Karosserie und Licht",months:12,km:null,diff:"leicht",time:"ca. 2 Std.",
+  q:"rust check sills battery tray",qx:"body rust areas",
+  tools:["Hebebühne oder Unterstellböcke","Taschenlampe","Hohlraumsonde"],
+  parts:["Hohlraum- und Unterbodenschutz nach Bedarf"],
+  specs:[],
+  steps:[
+   ["Unterboden waschen","Vor allem nach dem Winter Salz und Schmutz entfernen."],
+   ["Schwachstellen prüfen","Schweller, Wagenheberaufnahmen, Batteriefach und Wasserrinnen an der Heckklappe ansehen."],
+   ["Ablauflöcher frei machen","Verstopfte Abläufe öffnen."],
+   ["Konservierung nachbessern","Hohlräume einsprühen, Unterbodenschutz ausbessern."]],
+  links:["manual"]},
+
+ {id:"einwintern",name:"Batterie und Einwinterung",grp:"Allgemein",months:12,km:null,diff:"leicht",time:"ca. 1 Std.",
+  q:"winter storage",qx:"battery location",
+  tools:["Multimeter","Erhaltungsladegerät","Polfett, Drahtbürste"],
+  parts:[],
+  specs:[],
+  steps:[
+   ["Batterie messen","Ruhespannung um 12,6 V bedeutet voll geladen."],
+   ["Pole reinigen","Pole blank bürsten und dünn fetten."],
+   ["Vorher Öl wechseln","Frisches Öl in den Winter, damit Säuren nicht monatelang im Motor stehen."],
+   ["Volltanken","Weniger Kondenswasser im Tank."],
+   ["Reifendruck erhöhen","Um etwa 0,5 bar gegen Standplatten."],
+   ["Abstellen","Trocken und belüftet, Handbremse gelöst, Gang eingelegt, Erhaltungsladegerät anschließen."]],
+  links:[]},
+
+ {id:"hu",name:"Hauptuntersuchung (HU)",grp:"Allgemein",months:24,km:null,diff:"–",time:"Prüfstelle",
+  q:"inspection",qx:"",
+  tools:[],parts:[],specs:[],
+  steps:[
+   ["Licht und Blinker","Alle Leuchten, Hupe und Wischer prüfen."],
+   ["Bremsen","Beläge, Flüssigkeit, Handbremse."],
+   ["Abgasanlage","Auf Dichtheit und feste Aufhängung prüfen."],
+   ["Papiere","Fahrzeugschein und ggf. Teilegutachten oder Zulassungen für LED-Leuchtmittel mitnehmen."]],
+  links:[]}
+];
+const T = Object.fromEntries(TASKS.map(t=>[t.id,t]));
+
+/* ---------- Zustand ---------- */
+const SEED = () => ({
+  v:1,
+  odo:{km:null,date:null},
+  ov:{}, prog:{},
+  log:[
+   {id:"seed2",date:"2026-11-01",prec:"day",km:null,cost:null,tasks:["zuendkerzen"],text:"Neue Zündkerzen."},
+   {id:"seed1",date:"2025-08-15",prec:"month",km:null,cost:null,tasks:["oel","getriebeoel","zahnriemen","riemencheck","scheinwerfer"],
+    text:"Motoröl- und Getriebeölwechsel. Keil- und Zahnriemen erneuert. Defekten Temperaturfühler am Kühler erneuert. Tachowelle ausgetauscht, defektes Zahnrad des Kilometerzählers ersetzt. Klappmechanik der Frontscheinwerfer überholt, LED-Leuchtmittel verbaut."}
+  ]
+});
+const K={cfg:"sb924_cfg",cache:"sb924_cache",queue:"sb924_queue",prog:"sb924_prog"};
+const ld=(k,d)=>{try{const r=localStorage.getItem(k);return r?JSON.parse(r):d;}catch(e){return d;}};
+const st=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}};
+let cfg=ld(K.cfg,null);
+let server=ld(K.cache,null)||(({odo,ov,log})=>({odo,ov,log}))(SEED());
+let queue=ld(K.queue,[]);
+const prog=ld(K.prog,{});
+const net={state:cfg?"idle":"setup",busy:false,again:false};
+let S;
+function recompute(){
+  const s=JSON.parse(JSON.stringify(server||{}));
+  s.odo=s.odo||{km:null,date:null}; s.ov=s.ov||{}; s.log=Array.isArray(s.log)?s.log:[];
+  for(const o of queue){
+    if(o.op==="add"&&!s.log.some(e=>e.id===o.entry.id)) s.log.push(o.entry);
+    else if(o.op==="del") s.log=s.log.filter(e=>e.id!==o.id);
+    else if(o.op==="odo") s.odo=o.odo;
+    else if(o.op==="ov") s.ov=o.ov;
+  }
+  s.prog=prog; S=s;
+}
+recompute();
+let view=cfg?"status":"settings", cur=null;
+function saveProg(){ st(K.prog,prog); }
+function doOp(o){ queue.push(o); st(K.queue,queue); recompute(); flush(); }
+async function call(body,c){
+  c=c||cfg;
+  const res=await fetch(c.url,{method:"POST",body:JSON.stringify(Object.assign({pin:c.pin},body))});
+  const j=await res.json();
+  if(j.error) throw {app:j.error};
+  return j;
+}
+function setNet(s){ net.state=s; setSync(); }
+async function flush(){
+  if(!cfg) return;
+  if(net.busy){ net.again=true; return; }
+  net.busy=true;
+  const before=JSON.stringify(S);
+  try{
+    while(queue.length){
+      const j=await call(queue[0]);
+      server=j.state; st(K.cache,server); queue.shift(); st(K.queue,queue);
+    }
+    const j=await call({op:"load"}); server=j.state; st(K.cache,server);
+    setNet("ok");
+  }catch(e){ setNet(e&&e.app==="pin"?"pin":(navigator.onLine?"error":"offline")); }
+  net.busy=false;
+  recompute();
+  const typing=document.activeElement&&document.activeElement.matches("input,textarea");
+  if(JSON.stringify(S)!==before&&!dlg.open&&!typing&&view!=="settings") render(); else setSync();
+  if(net.again){ net.again=false; flush(); }
+}
+function setSync(){
+  const el=document.getElementById("sync"); if(!el) return;
+  const n=queue.length, w=n===1?"1 Änderung wartet":n+" Änderungen warten";
+  const m={setup:"Nicht eingerichtet",idle:"Verbinde …",pin:"Zugangscode falsch",
+    error:n?"Keine Verbindung, "+w:"Keine Verbindung zur Tabelle",offline:n?"Offline, "+w:"Offline"};
+  const txt=net.state==="ok"?(n?"Speichert …":"Synchronisiert"):m[net.state];
+  el.className="sync"+(net.state==="ok"&&!n?" on":"");
+  el.innerHTML="<i></i>"+esc(txt);
+}
+
+/* ---------- Helfer ---------- */
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const nf=new Intl.NumberFormat("de-DE");
+const todayISO=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");};
+const parseD=s=>{const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d||1);};
+const addMonths=(d,n)=>{const r=new Date(d);r.setMonth(r.getMonth()+n);return r;};
+const fmtD=(d,prec)=>prec==="month"?d.toLocaleDateString("de-DE",{month:"long",year:"numeric"}):d.toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"});
+const uid=()=>Math.random().toString(36).slice(2,10);
+const iv=t=>({months:(S.ov[t.id]&&S.ov[t.id].months!=null)?S.ov[t.id].months:t.months, km:(S.ov[t.id]&&"km" in S.ov[t.id])?S.ov[t.id].km:t.km});
+function lastDone(id){
+  return S.log.filter(e=>e.tasks&&e.tasks.includes(id)).sort((a,b)=>b.date.localeCompare(a.date))[0]||null;
+}
+function status(t){
+  const L=lastDone(t.id), I=iv(t), now=new Date(), odo=S.odo.km;
+  if(!L) return {s:"unknown",text:"Letzte Durchführung unbekannt",frac:null,L,I};
+  const ld=parseD(L.date);
+  const due=I.months?addMonths(ld,I.months):null;
+  const dueKm=(I.km&&L.km!=null)?L.km+I.km:null;
+  const days=due?Math.round((due-now)/864e5):null;
+  const kmLeft=(dueKm!=null&&odo!=null)?dueKm-odo:null;
+  let fr=0;
+  if(due) fr=Math.max(fr,(now-ld)/(due-ld));
+  if(kmLeft!=null) fr=Math.max(fr,(odo-L.km)/I.km);
+  let s="ok";
+  if((days!=null&&days<0)||(kmLeft!=null&&kmLeft<0)) s="over";
+  else if((days!=null&&days<=60)||(kmLeft!=null&&kmLeft<=1000)) s="soon";
+  let text;
+  if(s==="over"){
+    text=(days!=null&&days<0)?"Überfällig seit "+fmtD(due,"month"):"Überfällig um "+nf.format(-kmLeft)+" km";
+  }else{
+    const p=[];
+    if(due) p.push(s==="soon"&&days<=60?(days===0?"heute":"in "+days+" Tagen"):fmtD(due,"month"));
+    if(dueKm!=null) p.push("bei "+nf.format(dueKm)+" km");
+    text="Fällig "+p.join(" oder ");
+  }
+  return {s,text,frac:Math.min(1,fr),L,I,due,dueKm,kmLeft};
+}
+const RANK={over:0,unknown:1,soon:2,ok:3};
+const DIFF={leicht:"leicht",mittel:"mittel",anspruchsvoll:"anspruchsvoll","–":"–"};
+
+/* ---------- Render ---------- */
+function render(){
+  const app=document.getElementById("app");
+  if(view==="task"&&cur) app.innerHTML=topBar()+renderTask(T[cur]);
+  else if(view==="guides") app.innerHTML=topBar()+renderGuides();
+  else if(view==="log") app.innerHTML=topBar()+renderLog();
+  else if(view==="settings") app.innerHTML=topBar()+renderSettings();
+  else app.innerHTML=topBar()+renderStatus();
+  setSync();
+  const over=TASKS.filter(t=>status(t).s==="over").length;
+  document.getElementById("badge").innerHTML=over?'<span class="badge">'+over+"</span>":"";
+  document.querySelectorAll("nav.tabs button").forEach(b=>{
+    const active=(b.dataset.tab===view)||(view==="task"&&b.dataset.tab===(cur&&prevTab||"status"));
+    if(active) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current");
+  });
+}
+let prevTab="status";
+function topBar(){
+  return '<div class="top"><div class="brand">924 Servicebuch<small>Porsche 924 2.0, Baujahr 05/1980</small></div><button id="sync" class="sync" data-act="settings" aria-label="Verbindung und Einstellungen"><i></i></button></div>';
+}
+function odoHTML(){
+  const km=S.odo.km;
+  const digits=km==null?"––––––".split(""):String(km).padStart(6,"0").slice(-6).split("");
+  const cells=digits.map((d,i)=>'<span class="'+(i===5?"last":"")+'">'+d+"</span>").join("");
+  const meta=km==null?'<span><b>Kilometerstand eintragen</b></span><span>Antippen</span>'
+    :'<span>Stand vom <b>'+fmtD(parseD(S.odo.date))+'</b></span><span>Antippen zum Ändern</span>';
+  return '<section class="odo"><button class="odo-btn" data-act="odo" aria-label="Kilometerstand eintragen"><div class="drum">'+cells+'<em>km</em></div><div class="odo-meta">'+meta+"</div></button></section>";
+}
+function renderStatus(){
+  const rows=TASKS.map(t=>({t,st:status(t)})).sort((a,b)=>RANK[a.st.s]-RANK[b.st.s]||((b.st.frac??0)-(a.st.frac??0)));
+  const c={over:0,soon:0,unknown:0,ok:0}; rows.forEach(r=>c[r.st.s]++);
+  const pills=[["over","überfällig"],["soon","bald fällig"],["unknown","Datum fehlt"],["ok","in Ordnung"]]
+    .filter(([k])=>c[k]).map(([k,l])=>'<span class="pill"><span class="lamp '+k+'"></span>'+c[k]+" "+l+"</span>").join("");
+  const list=rows.map(({t,st})=>{
+    const bar=st.frac!=null?'<div class="bar"><b class="'+st.s+'" style="width:'+Math.round(st.frac*100)+'%"></b></div>':"";
+    return '<button class="row" data-act="open" data-id="'+t.id+'"><span class="lamp '+st.s+'"></span><span class="t">'+esc(t.name)+'</span><span class="g">'+esc(t.grp)+'</span><span class="s '+(st.s==="over"?"over":"")+'">'+esc(st.text)+"</span>"+bar+"</button>";
+  }).join("");
+  return odoHTML()+'<div class="summary">'+pills+'</div><h2>Wartungsplan</h2><div class="list">'+list+"</div>";
+}
+function linkList(t){
+  const ls=(t.links||[]).map(k=>SRC[k]);
+  if(t.q) ls.unshift(vid(t.q));
+  if(t.qx) ls.unshift(img(t.qx));
+  if(!ls.length) return "";
+  return '<h2>Bilder, Videos und Quellen</h2><div class="links">'+ls.map(l=>'<a href="'+esc(l.url)+'" target="_blank" rel="noopener"><b>'+esc(l.label)+"</b><small>"+esc(l.sub)+"</small></a>").join("")+"</div>";
+}
+function renderTask(t){
+  const st=status(t), I=st.I||iv(t), L=st.L;
+  const ivTxt=[I.months?(I.months%12===0?(I.months/12)+(I.months===12?" Jahr":" Jahre"):I.months+" Monate"):null,I.km?nf.format(I.km)+" km":null].filter(Boolean).join(" oder ")||"nach Bedarf";
+  const lastTxt=L?fmtD(parseD(L.date),L.prec)+(L.km!=null?", "+nf.format(L.km)+" km":""):"unbekannt";
+  let nextTxt="–";
+  if(L){ const p=[]; if(st.due) p.push(fmtD(st.due,"month")); if(st.dueKm!=null) p.push(nf.format(st.dueKm)+" km"); nextTxt=p.join(" oder ")||"–"; }
+  const kmHint=(I.km&&L&&L.km==null)?'<p class="note">Beim letzten Mal ist kein Kilometerstand eingetragen, darum wird nur die Zeit überwacht.</p>':"";
+  const verifyHint=t.verify?'<p class="note">Die Intervalle sind Startwerte. Gleiche sie mit deinem Werkstatthandbuch ab und passe sie hier an.</p>':"";
+  const prog=S.prog[t.id]||[];
+  const steps=t.steps.map(([h,d],i)=>{
+    const done=prog.includes(i);
+    return '<li class="'+(done?"done":"")+'"><label><span><span class="st">'+esc(h)+"</span>"+(d?'<span class="sd">'+esc(d)+"</span>":"")+'</span><input type="checkbox" data-act="step" data-id="'+t.id+'" data-i="'+i+'" '+(done?"checked":"")+' aria-label="Schritt erledigt"></label></li>';
+  }).join("");
+  const lists=(title,arr,cls)=>arr&&arr.length?'<h2>'+title+'</h2><ul class="plain '+(cls||"")+'">'+arr.map(x=>Array.isArray(x)?'<li class="'+(x[1]?"verify":"")+'">'+esc(x[0])+"</li>":"<li>"+esc(x)+"</li>").join("")+"</ul>":"";
+  return '<button class="back" data-act="back">Zurück</button>'+
+    '<div class="dt-head"><span class="lamp '+st.s+'"></span><h1>'+esc(t.name)+"</h1></div>"+
+    '<p class="dt-status '+(st.s==="over"?"over":"")+'">'+esc(st.text)+"</p>"+
+    '<dl class="facts"><dt>Intervall</dt><dd>'+ivTxt+'</dd><dt>Zuletzt</dt><dd>'+lastTxt+'</dd><dt>Nächstes Mal</dt><dd>'+nextTxt+"</dd></dl>"+
+    kmHint+
+    '<button class="btn wide" data-act="done" data-id="'+t.id+'">Als erledigt eintragen</button>'+
+    '<details class="iv"><summary>Intervall anpassen</summary><div class="iv-grid">'+
+      '<label class="f">Monate<input type="number" inputmode="numeric" min="0" id="ivM" value="'+(I.months??"")+'"></label>'+
+      '<label class="f">Kilometer<input type="number" inputmode="numeric" min="0" step="500" id="ivK" value="'+(I.km??"")+'" placeholder="keine"></label></div>'+
+      '<button class="btn small ghost" data-act="saveiv" data-id="'+t.id+'">Intervall speichern</button> '+
+      (S.ov[t.id]?'<button class="btn small ghost" data-act="resetiv" data-id="'+t.id+'">Startwert</button>':"")+
+    "</details>"+verifyHint+
+    '<h2>Anleitung</h2><div class="meta"><span>Schwierigkeit: <b>'+DIFF[t.diff]+'</b></span><span>Dauer: <b>'+esc(t.time)+"</b></span></div>"+
+    lists("Werkzeug",t.tools)+lists("Teile und Material",t.parts)+lists("Werte aus dem Handbuch",t.specs,"spec")+
+    '<h2>Schritte</h2><ol class="steps">'+steps+"</ol>"+
+    (prog.length?'<p class="note"><button class="btn small ghost" data-act="clearprog" data-id="'+t.id+'">Häkchen zurücksetzen</button></p>':"")+
+    (t.warn?'<div class="warn">'+esc(t.warn)+"</div>":"")+
+    linkList(t);
+}
+function renderGuides(){
+  const groups={};
+  TASKS.forEach(t=>(groups[t.grp]=groups[t.grp]||[]).push(t));
+  return '<h2>Anleitungen</h2><p class="note">Jede Anleitung hat Werkzeug- und Teileliste, abhakbare Schritte und Links zu Bildern, Explosionszeichnungen und Videos.</p>'+
+    Object.entries(groups).map(([g,ts])=>'<h2>'+esc(g)+'</h2><div class="list">'+ts.map(t=>{
+      const st=status(t);
+      return '<button class="row" data-act="open" data-id="'+t.id+'"><span class="lamp '+st.s+'"></span><span class="t">'+esc(t.name)+'</span><span class="g">'+esc(t.time)+'</span><span class="s">Schwierigkeit '+DIFF[t.diff]+", "+t.steps.length+" Schritte</span></button>";
+    }).join("")+"</div>").join("");
+}
+function renderLog(){
+  const es=[...S.log].sort((a,b)=>b.date.localeCompare(a.date));
+  const items=es.length?es.map(e=>'<article class="entry"><div><span class="ed">'+fmtD(parseD(e.date),e.prec)+"</span>"+(e.km!=null?'<span class="ek">'+nf.format(e.km)+" km</span>":"")+(e.cost!=null?'<span class="ek">'+nf.format(e.cost)+" €</span>":"")+(e.by?'<span class="ek">von '+esc(e.by)+'</span>':"")+"</div>"+
+    (e.text?"<p>"+esc(e.text)+"</p>":"")+
+    (e.tasks&&e.tasks.length?'<div class="chips">'+e.tasks.filter(id=>T[id]).map(id=>'<span class="chip">'+esc(T[id].name)+"</span>").join("")+"</div>":"")+
+    '<button class="del" data-act="del" data-id="'+e.id+'">Eintrag löschen</button></article>').join("")
+    :'<p class="empty">Noch keine Einträge. Trag deine erste Arbeit ein.</p>';
+  return '<h2>Serviceheft</h2><button class="btn wide" data-act="newlog" style="margin-bottom:14px">Arbeit eintragen</button>'+items;
+}
+
+function renderSettings(){
+  const c=cfg||{url:"",pin:"",name:""};
+  return '<h2>Verbindung zur Google-Tabelle</h2><p class="note">Die Web-App-Adresse und den Zugangscode bekommst du beim Einrichten des Apps Scripts. Beides bleibt nur auf diesem Gerät gespeichert.</p>'+
+   '<label class="f">Web-App-Adresse<input id="cUrl" type="url" inputmode="url" autocomplete="off" placeholder="https://script.google.com/macros/s/…/exec" value="'+esc(c.url)+'"></label><br>'+
+   '<label class="f">Zugangscode<input id="cPin" autocomplete="off" autocapitalize="off" value="'+esc(c.pin)+'"></label><br>'+
+   '<label class="f">Dein Name (steht bei deinen Einträgen im Serviceheft)<input id="cName" autocomplete="given-name" value="'+esc(c.name)+'"></label><br>'+
+   '<button class="btn wide" data-act="savecfg">Speichern und verbinden</button><p class="note" id="cMsg" role="status"></p>'+
+   (cfg?'<p class="note">'+(queue.length?queue.length+" Änderung(en) warten auf die Übertragung.":"Alle Änderungen sind übertragen.")+"</p>":"");
+}
+async function saveCfg(){
+  const url=document.getElementById("cUrl").value.trim(), pin=document.getElementById("cPin").value.trim(), name=document.getElementById("cName").value.trim();
+  const msg=document.getElementById("cMsg");
+  if(!/^https:\/\/script\.google\.com\/.+\/exec$/.test(url)){ msg.textContent="Die Adresse muss mit https://script.google.com/ beginnen und auf /exec enden."; return; }
+  if(!pin){ msg.textContent="Bitte den Zugangscode eintragen."; return; }
+  const c={url,pin,name};
+  msg.textContent="Verbinde …";
+  try{
+    const j=await call({op:"load"},c);
+    cfg=c; st(K.cfg,cfg); server=j.state; st(K.cache,server); setNet("ok");
+    msg.textContent="Verbunden. "+j.state.log.length+" Einträge in der Tabelle.";
+    view=prevTab&&prevTab!=="settings"?prevTab:"status"; recompute(); flush(); setTimeout(()=>{render();window.scrollTo(0,0);},700);
+  }catch(e){
+    msg.textContent=e&&e.app==="pin"?"Der Zugangscode stimmt nicht.":"Keine Verbindung. Adresse prüfen und ob die Web-App für „Jeder“ freigegeben ist.";
+  }
+}
+
+/* ---------- Dialoge ---------- */
+const dlg=document.getElementById("dlg"), dlgBody=document.getElementById("dlgBody");
+function openDlg(html){ dlgBody.innerHTML=html; dlg.showModal(); const f=dlgBody.querySelector("input,textarea"); if(f) f.focus(); }
+function odoDialog(){
+  openDlg('<h3>Kilometerstand</h3><div class="row2"><label class="f">Kilometer<input type="number" inputmode="numeric" id="dKm" value="'+(S.odo.km??"")+'"></label>'+
+    '<label class="f">Datum<input type="date" id="dDate" value="'+todayISO()+'"></label></div>'+
+    '<div class="acts"><button class="btn ghost" data-act="close">Abbrechen</button><button class="btn" data-act="saveodo">Speichern</button></div>');
+}
+function entryDialog(preset){
+  const checks=TASKS.map(t=>'<label><input type="checkbox" value="'+t.id+'" '+(preset&&preset.includes(t.id)?"checked":"")+">"+esc(t.name)+"</label>").join("");
+  const title=preset&&preset.length===1?esc(T[preset[0]].name)+" erledigt":"Arbeit eintragen";
+  openDlg('<h3>'+title+'</h3><div class="row2"><label class="f">Datum<input type="date" id="eDate" value="'+todayISO()+'"></label>'+
+    '<label class="f">Kilometerstand<input type="number" inputmode="numeric" id="eKm" value="'+(S.odo.km??"")+'" placeholder="optional"></label></div>'+
+    '<label class="f">Notiz, Teile, Marken<textarea id="eText" placeholder="z. B. 5 l 20W-50, Mann-Filter"></textarea></label>'+
+    '<label class="f">Kosten in Euro<input type="number" inputmode="decimal" id="eCost" placeholder="optional"></label>'+
+    '<div class="f" style="font-size:.88rem;color:var(--muted)">Zählt als Wartung für<div class="checks" id="eTasks">'+checks+"</div></div>"+
+    '<div class="acts"><button class="btn ghost" data-act="close">Abbrechen</button><button class="btn" data-act="saveentry">Eintragen</button></div>');
+}
+const num=v=>{const n=parseFloat(String(v).replace(",","."));return isFinite(n)?n:null;};
+
+/* ---------- Events ---------- */
+document.addEventListener("click",e=>{
+  const tab=e.target.closest("[data-tab]");
+  if(tab){ view=tab.dataset.tab; prevTab=view; cur=null; render(); window.scrollTo(0,0); return; }
+  const a=e.target.closest("[data-act]"); if(!a) return;
+  const act=a.dataset.act, id=a.dataset.id;
+  if(act==="step") return;
+  if(act==="open"){ prevTab=view==="task"?prevTab:view; cur=id; view="task"; render(); window.scrollTo(0,0); }
+  else if(act==="back"){ view=prevTab; cur=null; render(); window.scrollTo(0,0); }
+  else if(act==="odo") odoDialog();
+  else if(act==="close") dlg.close();
+  else if(act==="saveodo"){
+    const km=num(document.getElementById("dKm").value), d=document.getElementById("dDate").value||todayISO();
+    if(km==null||km<0){ document.getElementById("dKm").focus(); return; }
+    doOp({op:"odo",odo:{km:Math.round(km),date:d}}); dlg.close(); render();
+  }
+  else if(act==="done") entryDialog([id]);
+  else if(act==="newlog") entryDialog([]);
+  else if(act==="saveentry"){
+    const d=document.getElementById("eDate").value||todayISO();
+    const km=num(document.getElementById("eKm").value);
+    const text=document.getElementById("eText").value.trim();
+    const cost=num(document.getElementById("eCost").value);
+    const tasks=[...document.querySelectorAll("#eTasks input:checked")].map(i=>i.value);
+    if(!tasks.length&&!text){ document.getElementById("eText").focus(); return; }
+    const higher=km!=null&&(S.odo.km==null||km>=S.odo.km);
+    doOp({op:"add",entry:{id:uid(),date:d,prec:"day",km:km!=null?Math.round(km):null,cost,tasks,text,by:(cfg&&cfg.name)||""}});
+    tasks.forEach(t=>delete prog[t]); saveProg();
+    if(higher) doOp({op:"odo",odo:{km:Math.round(km),date:d}});
+    recompute(); dlg.close(); render();
+  }
+  else if(act==="del"){
+    if(confirm("Diesen Eintrag löschen?")){ doOp({op:"del",id}); render(); }
+  }
+  else if(act==="saveiv"){
+    const m=num(document.getElementById("ivM").value), k=num(document.getElementById("ivK").value);
+    const ov=Object.assign({},S.ov); ov[id]={months:m!=null?Math.round(m):null,km:k!=null?Math.round(k):null}; doOp({op:"ov",ov}); render();
+  }
+  else if(act==="resetiv"){ const ov=Object.assign({},S.ov); delete ov[id]; doOp({op:"ov",ov}); render(); }
+  else if(act==="clearprog"){ delete prog[id]; saveProg(); render(); }
+  else if(act==="settings"){ if(view!=="settings"&&view!=="task") prevTab=view; view="settings"; cur=null; render(); window.scrollTo(0,0); }
+  else if(act==="savecfg") saveCfg();
+});
+document.addEventListener("change",e=>{
+  const c=e.target.closest('[data-act="step"]'); if(!c) return;
+  const id=c.dataset.id, i=+c.dataset.i;
+  const p=new Set(S.prog[id]||[]); c.checked?p.add(i):p.delete(i);
+  prog[id]=[...p]; saveProg();
+  c.closest("li").classList.toggle("done",c.checked);
+});
+dlg.addEventListener("click",e=>{ if(e.target===dlg) dlg.close(); });
+
+render(); flush();
+window.addEventListener("online",flush);
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") flush(); });
+setInterval(()=>{ if(document.visibilityState==="visible") flush(); },60000);
+if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+</body>
+</html>
